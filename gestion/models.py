@@ -1,15 +1,19 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+from django.db.models.base import post_save
+from django.dispatch import receiver
 
 class Cliente(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cliente')
+    
     ESTADO_CHOICES = [
         ('activa', 'Activa'),
         ('bloqueada', 'Bloqueada'),
         ('cerrada', 'Cerrada'),
     ]
-
-    nombre = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+   
     direccion = models.CharField(max_length=100)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='activa')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
@@ -19,11 +23,13 @@ class Cliente(models.Model):
 
 
 class Cuenta(models.Model):
+
     cliente = models.ForeignKey(
         Cliente,
         on_delete=models.PROTECT,
         related_name='cuentas'
     )
+
     numero = models.CharField(max_length=20, unique=True)    
     saldo_disponible = models.IntegerField(default=0)
     activa = models.BooleanField(default=True)
@@ -73,3 +79,14 @@ class Transaccion(models.Model):
 
     def __str__(self):
         return f"{self.get_tipo_display()} - {self.monto} ({self.fecha_transaccion.strftime('%d/%m/%Y')})"
+
+
+
+@receiver(post_save, sender=User)
+def crear_perfil_cliente(sender, instance, created, **kwargs):
+    if created:
+        Cliente.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def guardar_perfil_cliente(sender, instance, **kwargs):
+    instance.cliente.save()
