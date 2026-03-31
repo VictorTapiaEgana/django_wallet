@@ -27,7 +27,7 @@ def user_logout(request):
 
     logout(request)
     messages.success(request, 'Has cerrado sesión exitosamente.')
-    return redirect('login')
+    return redirect('gestion:login')
 
 @login_required
 
