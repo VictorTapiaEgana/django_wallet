@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Sum
 
 def user_login(request):
 
@@ -32,4 +33,16 @@ def user_logout(request):
 @login_required
 
 def dashboard(request):
-    return render(request, 'gestion/dashboard.html')
+    
+    cliente = request.user.cliente    
+    
+    cuentas = cliente.cuentas.all()    
+    
+    saldo_total = cuentas.aggregate(Sum('saldo_disponible'))['saldo_disponible__sum'] or 0    
+    
+    context = {
+        'cuentas': cuentas,
+        'saldo_total': saldo_total,
+    }
+    
+    return render(request, 'gestion/dashboard.html', context)
