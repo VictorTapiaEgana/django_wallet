@@ -61,7 +61,7 @@ class Transaccion(models.Model):
     descripcion = models.TextField(blank=True, null=True)
 
     def clean(self):
-        """Validaciones de lógica de negocio a nivel de modelo."""
+        
         if self.tipo == 'transferencia' and not self.cuenta_destino:
             raise ValidationError("Una transferencia requiere una cuenta de destino.")
         
