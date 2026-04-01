@@ -79,5 +79,36 @@ def agregar_cuenta(request):
         return redirect('gestion:dashboard')
     
 
+@login_required    
+def administrar_cuentas(request):
+    
+    cuentas = request.user.cliente.cuentas.all()
+    
+    context = {
+        'cuentas': cuentas
+    }
+    
+    return render(request, 'gestion/administrar_cuentas.html', context)
+
+@login_required
+def eliminar_cuenta(request, cuenta_id):
+    
+    cuenta = Cuenta.objects.get(id=cuenta_id)
+
+    if request.method == 'GET':
+
+        context = {
+            'cuenta': cuenta
+        }
+
+        return render(request, 'gestion/eliminar_cuenta.html', context)
     
     
+    if request.method == 'POST':
+        
+        cuenta.delete()        
+        return redirect('gestion:administrar_cuentas')
+
+    
+def pagina_404_personalizada(request, exception=None):
+    return render(request, 'gestion/404.html', status=404)
