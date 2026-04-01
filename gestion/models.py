@@ -30,6 +30,20 @@ class Cuenta(models.Model):
         related_name='cuentas'
     )
 
+    TIPO_CUENTA_CHOICES = [        
+        ('BCI', 'Banco BCI'),
+        ('SANT', 'Banco Santander'),
+        ('ESTD', 'Banco Estado'),
+        ('CHIL', 'Banco de Chile'),
+        ('MERC', 'Mercado Pago'),
+        ('MACH', 'MACH (Bci)'),
+        ('TENP', 'Tenpo'),
+        ('BTC', 'Bitcoin (BTC)'),
+        ('ETH', 'Ethereum (ETH)'),
+        ('USDT', 'Tether (USDT)'),
+    ]
+    
+    tipo = models.CharField(max_length=10, choices=TIPO_CUENTA_CHOICES, default='BCI')
     numero = models.CharField(max_length=20, unique=True)    
     saldo_disponible = models.IntegerField(default=0)
     activa = models.BooleanField(default=True)
