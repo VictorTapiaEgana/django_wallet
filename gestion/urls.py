@@ -1,5 +1,4 @@
-from django.shortcuts import redirect
-from django.urls import path, re_path
+from django.urls import path
 from . import views
 
 app_name = 'gestion'
@@ -16,7 +15,4 @@ urlpatterns = [
     path('transferencias/', views.transferencias, name='transferencias'),
     path('transacciones/', views.transacciones, name='transacciones'),
 
-
-
-    re_path(r'^.*$', views.pagina_404_personalizada),
 ]
