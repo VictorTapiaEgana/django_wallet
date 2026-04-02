@@ -15,6 +15,21 @@
                 {% csrf_token %}
 
                 <div>
+                    {% if messages %}
+                        <div class="space-y-2 mt-4">
+                            {% for message in messages %}
+                                <p class="text-xs py-2 px-3 rounded-lg border text-center mb-6
+                                    {% if message.tags == 'error' %}
+                                        text-rose-400 bg-rose-500/10 border-rose-500/20
+                                    {% else %}
+                                        text-emerald-400 bg-emerald-500/10 border-emerald-500/20
+                                    {% endif %}">
+                                    {{ message }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <label for="cuenta_origen" class="block text-sm font-medium text-slate-300 mb-2">
                         Selecciona tu Cuenta de Origen
                     </label>

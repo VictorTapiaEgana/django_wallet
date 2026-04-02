@@ -164,7 +164,10 @@ def transferencias(request):
             destino = None
         
         if origen.saldo_disponible < monto:
+            
             messages.error(request, "Saldo insuficiente en la cuenta de origen.")
+            return redirect('gestion:transferencias')
+
         else:
         
             with transaction.atomic():
