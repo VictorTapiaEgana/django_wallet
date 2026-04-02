@@ -1,12 +1,14 @@
+from decimal import Decimal
 import random
 import string
-from django.shortcuts import render, redirect
+from django.db.models.base import transaction
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import Q, Sum
 
-from gestion.models import Cuenta
+from gestion.models import Cuenta, Transaccion
 
 def user_login(request):
 
@@ -145,18 +147,55 @@ def transferencias(request):
         return render(request, 'gestion/transferencias.html', {'cuentas': cuentas})
     
     if request.method == 'POST':
-
-        cuenta_origen_id = request.POST.get('cuenta_origen')
-        numero_destino = request.POST.get('numero_destino')
-        monto = request.POST.get('monto')
         
+        id_origen = request.POST.get('cuenta_origen')
+        num_destino = request.POST.get('numero_destino')
+        monto = Decimal(request.POST.get('monto'))
+        desc = request.POST.get('descripcion')
+
         
+        origen = get_object_or_404(Cuenta, id=id_origen, cliente=request.user.cliente)
+
         
+        try:
+            destino = Cuenta.objects.get(numero=num_destino)
+
+        except Cuenta.DoesNotExist:
+            destino = None
         
-        return redirect('gestion:transferencias')
+        if origen.saldo_disponible < monto:
+            messages.error(request, "Saldo insuficiente en la cuenta de origen.")
+        else:
+        
+            with transaction.atomic():
+            
+                origen.saldo_disponible -= monto
+                origen.save()
+            
+                if destino:
+                    destino.saldo_disponible += monto
+                    destino.save()
+                
+                Transaccion.objects.create(
+                    cuenta_origen=origen,
+                    cuenta_destino=destino,
+                    tipo='transferencia',
+                    monto=monto,
+                    descripcion=desc
+                )
+                messages.success(request, "¡Transferencia realizada con éxito!")
+                return redirect('gestion:dashboard')
 
 
-
+@login_required
+def transacciones(request):
+    
+    transacciones = Transaccion.objects.filter(
+        Q(cuenta_origen__cliente=request.user.cliente) | 
+        Q(cuenta_destino__cliente=request.user.cliente)
+    ).select_related('cuenta_origen', 'cuenta_destino').order_by('-fecha_transaccion')
+    
+    return render(request, 'gestion/transacciones.html', {'transacciones': transacciones})
 
 def pagina_404_personalizada(request, exception=None):
     return render(request, 'gestion/404.html', status=404)

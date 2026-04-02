@@ -72,7 +72,7 @@
 
             <div class="divide-y divide-slate-800">
 
-            {% for cuenta in cuentas_activas %}
+            {% for cuenta in cuentas %}
                 <div class="px-6 py-4 flex items-center justify-between hover:bg-slate-800/30 transition-colors cursor-pointer group">
                     <div class="flex items-center space-x-4">
                         <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
@@ -90,7 +90,7 @@
 
                     <div class="text-right">
                         <p class="text-sm font-bold text-white">$ {{ cuenta.saldo_disponible|intcomma }}</p>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-wider">Activa</p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-wider">{{ cuenta.estado }}</p>
                     </div>
 
                 </div>
