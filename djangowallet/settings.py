@@ -27,7 +27,12 @@ SECRET_KEY = 'django-insecure-&4x2)ewkmjl=@*4@&l4emompm(p#@%y(2ew+e2dewkx18v3-+m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'django-wallet-r64y.onrender.com', # El dominio específico de tu app
+    '.onrender.com',                   # Comodín para cualquier subdominio de Render
+    'localhost',                       # Para que sigas pudiendo probar en tu PC
+    '127.0.0.1',
+]
 
 
 # Application definition
