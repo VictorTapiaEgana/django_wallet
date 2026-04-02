@@ -2,6 +2,14 @@
 
 Sistema de gestión de billetera digital y transacciones bancarias desarrollado con **Django**. Permite a los usuarios administrar múltiples tipos de cuentas (bancarias, digitales y criptomonedas) y realizar transferencias entre ellas.
 
+Version: 1.0.0
+
+**En producción:** 
+   https://django-wallet-r64y.onrender.com
+
+**Usuario:** victor
+**Contraseña:** 12345
+
 ## 🚀 Requisitos e Instalación
 
 ### Pre-requisitos
@@ -45,7 +53,20 @@ Sistema de gestión de billetera digital y transacciones bancarias desarrollado 
    python manage.py runserver
    ```
 
+7. **Acceder a la aplicación:**
+   ```bash
+   http://127.0.0.1:8000/
+   ```
+8. **Acceder con las credenciales:**
+   ```
+   usuario: victor
+   contraseña: 12345
+   ```
+
+
 ---
+
+
 
 ## 📦 Dependencias Principales
 El proyecto utiliza las siguientes librerías principales:
