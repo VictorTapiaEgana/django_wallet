@@ -12,6 +12,8 @@ urlpatterns = [
     path('agregar-cuenta/', views.agregar_cuenta, name='agregar_cuenta'),
     path('administrar-cuentas/', views.administrar_cuentas, name='administrar_cuentas'),
     path('eliminar-cuenta/<int:cuenta_id>/', views.eliminar_cuenta, name='eliminar_cuenta'),
+    path('actualizar-cuenta/<int:cuenta_id>/', views.actualizar_cuenta, name='actualizar_cuenta'),
+    path('transferencias/', views.transferencias, name='transferencias'),
 
 
 

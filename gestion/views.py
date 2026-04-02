@@ -39,12 +39,15 @@ def dashboard(request):
     
     cliente = request.user.cliente    
     
-    cuentas = cliente.cuentas.all()    
+    cuentas = cliente.cuentas.all()   
+    cuentas_activas = cuentas.filter(activa=True)
+     
     
     saldo_total = cuentas.aggregate(Sum('saldo_disponible'))['saldo_disponible__sum'] or 0    
     
     context = {
         'cuentas': cuentas,
+        'cuentas_activas': cuentas_activas,
         'saldo_total': saldo_total,
     }
     
@@ -109,6 +112,51 @@ def eliminar_cuenta(request, cuenta_id):
         cuenta.delete()        
         return redirect('gestion:administrar_cuentas')
 
+@login_required
+def actualizar_cuenta(request, cuenta_id):
     
+    cuenta = Cuenta.objects.get(id=cuenta_id)
+
+    if request.method == 'GET':
+
+        context = {
+            'cuenta': cuenta
+        }
+
+        return render(request, 'gestion/actualizar_cuenta.html', context)
+    
+    if request.method == 'POST':
+        
+        nuevo_saldo = request.POST.get('saldo_disponible')
+        estado_activo = request.POST.get('activa') == 'on'         
+        
+        cuenta.saldo_disponible = nuevo_saldo
+        cuenta.activa = estado_activo
+        cuenta.save()
+        
+        return redirect('gestion:administrar_cuentas')
+
+@login_required
+def transferencias(request):
+
+    cuentas = request.user.cliente.cuentas.all()
+
+    if request.method == 'GET':
+        return render(request, 'gestion/transferencias.html', {'cuentas': cuentas})
+    
+    if request.method == 'POST':
+
+        cuenta_origen_id = request.POST.get('cuenta_origen')
+        numero_destino = request.POST.get('numero_destino')
+        monto = request.POST.get('monto')
+        
+        
+        
+        
+        return redirect('gestion:transferencias')
+
+
+
+
 def pagina_404_personalizada(request, exception=None):
     return render(request, 'gestion/404.html', status=404)
