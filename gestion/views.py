@@ -43,6 +43,11 @@ def dashboard(request):
     
     cuentas = cliente.cuentas.all()   
     cuentas_activas = cuentas.filter(activa=True)
+
+    ultima_transaccion = Transaccion.objects.filter(
+        Q(cuenta_origen__cliente=request.user.cliente) | 
+        Q(cuenta_destino__cliente=request.user.cliente)
+    ).select_related('cuenta_origen', 'cuenta_destino').order_by('-fecha_transaccion').first()
      
     
     saldo_total = cuentas.aggregate(Sum('saldo_disponible'))['saldo_disponible__sum'] or 0    
@@ -51,6 +56,7 @@ def dashboard(request):
         'cuentas': cuentas,
         'cuentas_activas': cuentas_activas,
         'saldo_total': saldo_total,
+        'ultima_transaccion': ultima_transaccion,
     }
     
     return render(request, 'gestion/dashboard.html', context)
@@ -80,7 +86,7 @@ def agregar_cuenta(request):
             numero=num_cuenta,
             saldo_disponible=saldo_inicial
         )
-        
+        messages.success(request, 'Cuenta agregada exitosamente.')
         return redirect('gestion:dashboard')
     
 
@@ -111,7 +117,7 @@ def eliminar_cuenta(request, cuenta_id):
     
     if request.method == 'POST':
         
-        cuenta.delete()        
+        cuenta.delete()                
         return redirect('gestion:administrar_cuentas')
 
 @login_required
@@ -164,7 +170,7 @@ def transferencias(request):
             destino = None
         
         if origen.saldo_disponible < monto:
-            
+
             messages.error(request, "Saldo insuficiente en la cuenta de origen.")
             return redirect('gestion:transferencias')
 

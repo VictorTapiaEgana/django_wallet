@@ -69,11 +69,11 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right">
                                 {% if transaccion.cuenta_origen.cliente.user == request.user %}
                                     <span class="text-sm font-bold text-rose-500">
-                                        - ${{ transaccion.monto|intcomma }}
+                                        - ${{ transaccion.monto|floatformat:0|intcomma }}
                                     </span>
                                 {% else %}
                                     <span class="text-sm font-bold text-emerald-500">
-                                        + ${{ transaccion.monto|intcomma }}
+                                        + ${{ transaccion.monto|floatformat:0|intcomma }}
                                     </span>
                                 {% endif %}
                             </td>

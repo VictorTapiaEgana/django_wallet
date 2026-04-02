@@ -48,16 +48,14 @@
             </div>
 
             <div class="text-xl font-bold text-white mb-1">
-                {% with ultima=request.user.cliente.cuentas.first.transacciones.first %}
-                {% if ultima %}
-                    -$ {{ ultima.monto }}
+                {% if ultima_transaccion %}
+                    -$ {{ ultima_transaccion.monto|floatformat:0|intcomma }}
                 {% else %}
                     $ 0.00
                 {% endif %}
-                {% endwith %}
             </div>
 
-            <div class="text-slate-500 text-xs">Hace {{ ultima_fecha|timesince }}</div>
+            <div class="text-slate-500 text-xs">Hace {{ ultima_transaccion.fecha_transaccion|timesince }}</div>
             </div>
         </div>
 
