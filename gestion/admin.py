@@ -12,6 +12,6 @@ admin.site.register(Cuenta)
 
 @admin.register(Transaccion)
 class TransaccionAdmin(admin.ModelAdmin):
-    list_display = ('cuenta_origen', 'cuenta_destino', 'monto', 'fecha') # Columnas que verás
-    list_filter = ('fecha',) # Filtro lateral por fecha
+    list_display = ('cuenta_origen', 'cuenta_destino', 'monto', 'fecha_transaccion') # Columnas que verás
+    list_filter = ('fecha_transaccion',) # Filtro lateral por fecha
     search_fields = ('cuenta_origen__numero', 'cuenta_destino__numero')
