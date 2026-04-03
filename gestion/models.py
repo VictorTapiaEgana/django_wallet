@@ -19,7 +19,7 @@ class Cliente(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.nombre} ({self.get_estado_display()})"
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 class Cuenta(models.Model):
@@ -50,7 +50,7 @@ class Cuenta(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Cuenta {self.numero} - {self.cliente.nombre}"
+        return f"Cuenta {self.numero} - {self.cliente.user.first_name} {self.cliente.user.last_name}"
 
 
 class Transaccion(models.Model):
