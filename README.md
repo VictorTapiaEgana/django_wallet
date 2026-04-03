@@ -120,16 +120,61 @@ Al iniciar sesión, el usuario accede a un resumen de:
 
 ---
 
-## 📂 Estructura del Proyecto
-```text
-DjangoWallet/
-├── djangowallet/      # Configuración del proyecto
-├── gestion/           # Lógica de negocio (App principal)
-│   ├── migrations/    # Migraciones de base de datos
-│   ├── models.py      # Definición de datos
-│   ├── views.py       # Lógica de las vistas
-│   └── urls.py        # Rutas de la aplicación
-├── templates/         # Archivos HTML (UI)
-├── manage.py          # Script de gestión de Django
-└── db.sqlite3         # Base de datos local
+## 🧪 Tests Automatizados
+
+### Ejecutar Tests
+```bash
+python manage.py test
+```
+
+### Estructura de Tests
+El proyecto incluye tests completos en `gestion/tests.py`:
+
+#### GestionViewsTest
+Tests de renderizado y funcionalidad de vistas:
+* **test_login_view_render**: Verifica que la vista de login carga correctamente
+* **test_login_view_post**: Valida autenticación exitosa
+* **test_dashboard_view_render**: Comprueba renderizado del dashboard con datos del usuario
+* **test_agregar_cuenta_view_render/post**: Test de creación de cuentas
+* **test_transferencias_view_render/post**: Validación de transferencias entre cuentas
+* **test_transacciones_view_render**: Historial de movimientos
+
+#### GestionModelsTest
+Tests de creación y validación de modelos:
+* **test_cliente_creation**: Creación automática de cliente vía signals
+* **test_cuenta_creation**: Creación de cuentas con campos validados
+* **test_transaccion_creation_deposito/transferencia**: Registro de transacciones
+* **test_transaccion_validation_misma_cuenta**: Evita transferencias a la misma cuenta
+* **test_transaccion_validation_transferencia_sin_destino**: Requiere cuenta destino
+
+#### GestionIntegrationTest
+Tests de flujos completos:
+* **test_flujo_completo_crear_cuenta_y_transferir**: Crear cuentas → Transferir → Validar saldos
+
+### Implementación Técnica
+* **Signals Django**: Cliente se crea automáticamente al crear User (`post_save`)
+* **Transacciones atómicas**: `transaction.atomic()` garantiza integridad en transferencias
+* **Validaciones modelo**: Métodos `clean()` validan reglas de negocio
+* **Tipos de datos**: 
+  * `DecimalField` para montos de transacciones (precisión decimal)
+  * `IntegerField` para saldos de cuentas (valores enteros)
+
+### Cobertura de Tests
+| Módulo | Tests | Descripción |
+|--------|-------|-------------|
+| Views | 9 | Renderizado, autenticación, CRUD, transferencias |
+| Models | 7 | Creación, validaciones, relaciones |
+| Integration | 1 | Flujo completo de usuario |
+
+### Comandos útiles
+```bash
+# Ejecutar todos los tests
+python manage.py test
+
+# Ejecutar tests específicos
+python manage.py test gestion.tests.GestionViewsTest
+python manage.py test gestion.tests.GestionModelsTest
+
+# Ejecutar un test individual
+python manage.py test gestion.tests.GestionViewsTest.test_dashboard_view_render
 ```
