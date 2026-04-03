@@ -1,4 +1,5 @@
 from django.contrib import admin
+from .models import Cliente, Cuenta, Transferencia
 
 # Register your models here.
 
